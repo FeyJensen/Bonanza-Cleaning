@@ -19,11 +19,27 @@ const TESTIMONIALS = [
   },
 ]
 
+const YELP_URL =
+  'https://www.yelp.com/biz/bonanzas-cleaning-service-clackamas'
+
 function Testimonials() {
   return (
     <section id="testimonials" className="testimonials">
       <div className="container">
         <h2>What Our Clients Say</h2>
+
+        <a
+          className="yelp-badge"
+          href={YELP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span className="yelp-badge__stars" aria-hidden="true">
+            ★★★★★
+          </span>
+          <span className="yelp-badge__text">5.0 rated on Yelp</span>
+        </a>
+
         <div className="testimonials__grid">
           {TESTIMONIALS.map((testimonial) => (
             <blockquote key={testimonial.name} className="testimonial-card">

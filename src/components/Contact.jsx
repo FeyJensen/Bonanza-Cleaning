@@ -8,6 +8,8 @@ const INITIAL_FORM = {
   message: '',
 }
 
+const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY
+
 function Contact() {
   const [form, setForm] = useState(INITIAL_FORM)
   const [status, setStatus] = useState('idle')
@@ -17,15 +19,35 @@ function Contact() {
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
     if (!form.name || !form.email || !form.message) {
       setStatus('error')
       return
     }
-    // No backend wired up yet; simulate a successful submission.
-    setStatus('success')
-    setForm(INITIAL_FORM)
+
+    setStatus('sending')
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: `New quote request: ${form.service}`,
+          ...form,
+        }),
+      })
+      const result = await response.json()
+
+      if (result.success) {
+        setStatus('success')
+        setForm(INITIAL_FORM)
+      } else {
+        setStatus('error')
+      }
+    } catch {
+      setStatus('error')
+    }
   }
 
   return (
@@ -38,8 +60,8 @@ function Contact() {
             one business day with a custom quote.
           </p>
           <ul className="contact__details">
-            <li>📞 (800) 555-1234</li>
-            <li>✉️ hello@bonanzacleaning.com</li>
+            <li>📞 (503) 901-9256</li>
+            <li>✉️ yolyespijime@yahoo.com</li>
             <li>📍 Serving the greater metro area</li>
           </ul>
         </div>
@@ -104,8 +126,8 @@ function Contact() {
             />
           </div>
 
-          <button type="submit" className="btn btn--primary">
-            Send Request
+          <button type="submit" className="btn btn--primary" disabled={status === 'sending'}>
+            {status === 'sending' ? 'Sending...' : 'Send Request'}
           </button>
 
           {status === 'success' && (
@@ -115,7 +137,8 @@ function Contact() {
           )}
           {status === 'error' && (
             <p className="form-status form-status--error">
-              Please fill out your name, email, and message.
+              Something went wrong. Please fill out your name, email, and
+              message, or call us directly.
             </p>
           )}
         </form>

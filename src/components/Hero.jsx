@@ -1,6 +1,9 @@
+import heroImage from '../assets/hero-living-room.jpeg'
+
 function Hero() {
   return (
     <section id="top" className="hero">
+      <img src={heroImage} alt="" className="hero__bg-image" />
       <div className="container hero__inner">
         <div className="hero__content">
           <p className="eyebrow">A warm welcome home</p>

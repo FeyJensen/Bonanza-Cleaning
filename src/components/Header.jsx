@@ -23,8 +23,8 @@ function Header() {
               {link.label}
             </a>
           ))}
-          <a href="tel:+18005551234" className="nav__phone">
-            (800) 555-1234
+          <a href="tel:+15039019256" className="nav__phone">
+            (503) 901-9256
           </a>
         </nav>
 

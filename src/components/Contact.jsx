@@ -12,7 +12,7 @@ const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY
 
 function Contact() {
   const [form, setForm] = useState(INITIAL_FORM)
-  const [status, setStatus] = useState('idle')
+  const [status, setStatus] = useState({ type: 'idle', message: '' })
 
   function handleChange(event) {
     const { name, value } = event.target
@@ -22,31 +22,62 @@ function Contact() {
   async function handleSubmit(event) {
     event.preventDefault()
     if (!form.name || !form.email || !form.message) {
-      setStatus('error')
+      setStatus({
+        type: 'error',
+        message: 'Please fill out your name, email, and message.',
+      })
       return
     }
 
-    setStatus('sending')
+    if (!WEB3FORMS_ACCESS_KEY) {
+      setStatus({
+        type: 'error',
+        message: 'Missing Web3Forms access key. Add VITE_WEB3FORMS_ACCESS_KEY to .env and restart the dev server.',
+      })
+      return
+    }
+
+    setStatus({ type: 'sending', message: '' })
     try {
+      const formData = new FormData()
+      formData.append('access_key', WEB3FORMS_ACCESS_KEY)
+      formData.append('subject', `New quote request: ${form.service}`)
+      formData.append('name', form.name)
+      formData.append('email', form.email)
+      formData.append('phone', form.phone)
+      formData.append('service', form.service)
+      formData.append('message', form.message)
+      formData.append('from_name', 'Bonanza Cleaning Website')
+
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          access_key: WEB3FORMS_ACCESS_KEY,
-          subject: `New quote request: ${form.service}`,
-          ...form,
-        }),
+        headers: { Accept: 'application/json' },
+        body: formData,
       })
-      const result = await response.json()
+      const result = await response.json().catch(() => null)
 
-      if (result.success) {
-        setStatus('success')
+      if (import.meta.env.DEV) {
+        console.debug('Web3Forms response', {
+          ok: response.ok,
+          status: response.status,
+          result,
+        })
+      }
+
+      if (response.ok && result?.success) {
+        setStatus({ type: 'success', message: "Thanks! We'll be in touch shortly." })
         setForm(INITIAL_FORM)
       } else {
-        setStatus('error')
+        setStatus({
+          type: 'error',
+          message: result?.message || 'Something went wrong while sending your request.',
+        })
       }
     } catch {
-      setStatus('error')
+      setStatus({
+        type: 'error',
+        message: 'Network error while contacting Web3Forms. Please try again.',
+      })
     }
   }
 
@@ -126,19 +157,18 @@ function Contact() {
             />
           </div>
 
-          <button type="submit" className="btn btn--primary" disabled={status === 'sending'}>
-            {status === 'sending' ? 'Sending...' : 'Send Request'}
+          <button type="submit" className="btn btn--primary" disabled={status.type === 'sending'}>
+            {status.type === 'sending' ? 'Sending...' : 'Send Request'}
           </button>
 
-          {status === 'success' && (
+          {status.type === 'success' && (
             <p className="form-status form-status--success">
-              Thanks! We'll be in touch shortly.
+              {status.message}
             </p>
           )}
-          {status === 'error' && (
+          {status.type === 'error' && (
             <p className="form-status form-status--error">
-              Something went wrong. Please fill out your name, email, and
-              message, or call us directly.
+              {status.message}
             </p>
           )}
         </form>

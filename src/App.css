@@ -107,7 +107,7 @@
 .hero {
   position: relative;
   background: var(--color-warm-cream);
-  padding: 96px 0;
+  padding: 45px 0;
   overflow: hidden;
 }
 
@@ -206,27 +206,44 @@
 
 /* About */
 .about {
+  position: relative;
   background: var(--color-bg-alt);
   padding: 88px 0;
+  overflow: hidden;
+}
+
+.about__text {
+  text-align: center;
+  max-width: 80ch;
+  margin: 0 auto;
+  padding: 32px;
+  background: rgba(255, 243, 226, 0.92);
+  border-radius: 18px;
+  box-shadow: 0 10px 28px rgba(61, 46, 34, 0.12);
 }
 
 .about__inner {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
+  position: relative;
+  z-index: 1;
   gap: 48px;
-  align-items: start;
+  align-items: center;
+}
+
+.about__list {
+  max-width: 520px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .about__list li {
-  padding: 8px 0 8px 28px;
+  padding: 8px 0;
   position: relative;
   color: var(--color-text-light);
 }
 
 .about__list li::before {
   content: '✓';
-  position: absolute;
-  left: 0;
+  margin-right: 8px;
   color: var(--color-primary);
   font-weight: 700;
 }
@@ -234,6 +251,15 @@
 .about__stats {
   display: grid;
   gap: 20px;
+}
+
+.about__bg-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.3;
 }
 
 .stat-card {

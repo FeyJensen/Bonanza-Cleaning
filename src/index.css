@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
 :root {
   --color-primary: #c1612f;
   --color-primary-dark: #8a4423;
@@ -8,8 +10,8 @@
   --color-bg-alt: #fbebd9;
   --color-warm-cream: #fff3e2;
   --max-width: 1140px;
-  --font-heading: 'Fraunces', Georgia, serif;
-  --font-body: 'Nunito', 'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+  --font-heading: 'Lora', Georgia, serif;
+  --font-body: 'Manrope', 'Segoe UI', system-ui, -apple-system, sans-serif;
   font-family: var(--font-body);
   color-scheme: light;
 }
